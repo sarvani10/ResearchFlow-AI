@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="page-header">
+    <h2>Memento <em>Database</em></h2>
+</header>
+
+<div class="memento-grid">
+    {% for paper in papers %}
+    <div class="paper-card">
+        <div class="card-meta">
+            <span>{{ paper.added_at.split(' ')[0] if paper.added_at else 'Unknown Date' }}</span>
+            {% if paper.journal %}
+            <span class="meta-divider">&bull;</span>
+            <span>{{ paper.journal }}</span>
+            {% endif %}
+        </div>
+        <h3 class="card-title">{{ paper.title }}</h3>
+        <p class="card-summary">{{ paper.abstract | truncate(150) }}</p>
+        
+        {% if paper.core_findings %}
+        <div class="card-tags">
+            {% for finding in paper.core_findings[:2] %}
+            <span class="tag">{{ finding | truncate(40) }}</span>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="{{ url_for('view_paper', paper_id=paper.id) }}" class="btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; text-decoration: none;">View Analysis &rarr;</a>
+            <a href="{{ paper.url }}" target="_blank" class="card-link">Original &nearr;</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No papers stored in Memento Database yet.</p>
+        <a href="{{ url_for('index') }}" class="btn-secondary">Analyze a paper</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
